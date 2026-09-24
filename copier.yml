@@ -1,0 +1,71 @@
+_min_copier_version: "9.18.2"
+_subdirectory: template
+_templates_suffix: .jinja
+_envops:
+  variable_start_string: "[["
+  variable_end_string: "]]"
+  keep_trailing_newline: true
+_tasks:
+  - [uv, lock]
+_message_after_copy: |
+  Project created successfully.
+
+  Next steps:
+    cd [[ _copier_conf.dst_path ]]
+    just setup
+    uv run prek install
+    just check
+_message_after_update: |
+  Project updated and uv.lock refreshed. Review the changes and run `just check`.
+
+project_name:
+  type: str
+  help: Lowercase, kebab-case distribution and repository name.
+  default: my-project
+  validator: >-
+    {% if not (project_name | regex_search('^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$')) %}
+    Use lowercase letters, digits, and single dashes; start with a letter.
+    {% endif %}
+
+description:
+  type: str
+  help: Short project description.
+  default: A Python project.
+
+project_type:
+  type: str
+  help: Generate a library or a dependency-free CLI application.
+  choices: [library, app]
+  default: library
+
+author_name:
+  type: str
+  default: binado
+
+author_email:
+  type: str
+  default: bernardopveronese@gmail.com
+  validator: >-
+    {% if '@' not in author_email %}
+    Enter a valid email address.
+    {% endif %}
+
+github_username:
+  type: str
+  default: binado
+
+python_min:
+  type: str
+  help: Minimum supported Python version.
+  choices: ["3.11", "3.12", "3.13", "3.14"]
+  default: "3.11"
+
+publish_to_pypi:
+  type: bool
+  help: Include a trusted-publishing workflow for PyPI and TestPyPI.
+  default: false
+
+package_name:
+  type: str
+  when: false
+  default: "[[ project_name | replace('-', '_') ]]"
