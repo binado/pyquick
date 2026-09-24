@@ -1,0 +1,65 @@
+[project]
+name = "[[ project_name ]]"
+version = "0.1.0"
+description = "[[ description ]]"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "[[ author_name ]]", email = "[[ author_email ]]" },
+]
+requires-python = ">=[[ python_min ]]"
+dependencies = []
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+{% if python_min == "3.11" %}
+    "Programming Language :: Python :: 3.11",
+{% endif %}
+{% if python_min in ["3.11", "3.12"] %}
+    "Programming Language :: Python :: 3.12",
+{% endif %}
+{% if python_min in ["3.11", "3.12", "3.13"] %}
+    "Programming Language :: Python :: 3.13",
+{% endif %}
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/[[ github_username ]]/[[ project_name ]]"
+Repository = "https://github.com/[[ github_username ]]/[[ project_name ]].git"
+Issues = "https://github.com/[[ github_username ]]/[[ project_name ]]/issues"
+{% if project_type == "app" %}
+
+[project.scripts]
+"[[ project_name ]]" = "[[ package_name ]].__main__:main"
+{% endif %}
+
+[build-system]
+requires = ["uv_build>=0.12.18,<0.13"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "prek>=0.5.3",
+    "ruff>=0.16.0",
+    "ty>=0.0.83",
+    { include-group = "test" },
+]
+test = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py[[ python_min | replace('.', '') ]]"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP"]
+
+[tool.ty.src]
+include = ["src", "tests"]
